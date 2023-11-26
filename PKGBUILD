@@ -6,7 +6,7 @@ _pkgver=6.5
 _kernel_tag="panthor"
 pkgbase=linux-$_kernel_tag-git
 pkgname=("${pkgbase}-headers" $pkgbase)
-pkgver=6.5
+pkgver=6.7.0.rc1.panthor.g3255db267a2b
 pkgrel=1
 arch=('aarch64')
 license=('GPL2')
@@ -15,7 +15,7 @@ pkgdesc="Linux kernel package targeting to pretest 6.5x merges for panthor"
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils' 'dtc')
 options=('!strip')
 
-source=(git+$url/linux.git#branch=panthor
+source=(git+$url/linux.git#branch=panthor+mpp+rga
         'linux.preset'
         "extlinux.${_kernel_tag}.template"
         )
@@ -52,6 +52,8 @@ prepare() {
     cp -f arch/arm64/configs/rk3588_panthor_release_defconfig ./.config
   fi
   
+  scripts/kconfig/merge_config.sh -m .config arch/arm64/configs/mpp_defconfig
+  scripts/kconfig/merge_config.sh -m .config arch/arm64/configs/rga_multi_defconfig
   make olddefconfig prepare
   make -s kernelrelease > version
 }
